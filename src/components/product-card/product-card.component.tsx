@@ -1,7 +1,7 @@
 import { PhotoCarousel } from '../photo-carousel/photo-carousel.component';
 import styles from './product-card.component.module.css';
 import type { ISize } from '../../domain/types';
-import { useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
 
 interface ProductCardProps {
   name: string;
@@ -27,6 +27,10 @@ export const ProductCardComponent = ({
   disabledSizes = [],
 }: ProductCardProps) => {
   const [selectedSizes, setSelectedSizes] = useState<number[]>([]);
+
+  const filteredSelectedSizes = useMemo(() => {
+    return selectedSizes.filter(size => !disabledSizes.includes(size));
+  }, [selectedSizes, disabledSizes]);
 
   const handleSizeChange = (sizeId: number, checked: boolean) => {
     if (disabledSizes.includes(sizeId)) return;
@@ -64,7 +68,7 @@ export const ProductCardComponent = ({
                 <div className={styles.sizesGrid}>
                   {sizes.map(size => {
                     const isDisabled = disabledSizes.includes(size.id);
-                    const isSelected = selectedSizes.includes(size.id);
+                    const isSelected = filteredSelectedSizes.includes(size.id);
                     
                     return (
                       <label 

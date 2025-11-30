@@ -45,6 +45,11 @@ export const ConcreteProductCardComponent = observer(() => {
     }
 
     purchaseStore.buyItem(product, colorId, selectedSizes);
+
+    setSelectedSizesByColor(prev => {
+      prev.delete(colorId)
+      return prev;
+    });
   }
 
   const getDisabledSizesForColor = (colorId: number): number[] => {
