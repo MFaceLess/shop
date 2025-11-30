@@ -1,0 +1,48 @@
+.carouselContainer {
+  position: relative;
+  display: inline-block;
+}
+
+.photo {
+  max-width: 400px;
+  height: auto;
+}
+
+.navButton {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s;
+}
+
+.arrow {
+    width: 40px;
+    height: 40px;
+}
+
+.navButton:hover:not(:disabled) {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.navButton:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.leftButton {
+  left: 10px;
+}
+
+.rightButton {
+  right: 10px;
+}

@@ -1,0 +1,64 @@
+.card {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 4px;
+    border: 1px solid gray;
+}
+
+.sizesContainer {
+    margin: 1rem 0;
+}
+
+.sizesGrid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.sizeLabel {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.sizeOption {
+    cursor: pointer;
+}
+
+.hiddenCheckbox {
+    display: none;
+}
+
+.sizeButton {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.sizeButton:hover {
+    border-color: #999;
+}
+
+.hiddenCheckbox:checked + .sizeButton {
+    background: #007bff;
+    color: white;
+    border-color: #007bff;
+    }
+
+.sizeText {
+    font-size: 0.9rem;
+}
+
+.disabledSize {
+  background-color: #f8f9fa;
+  color: #6c757d;
+  border-color: #dee2e6;
+}
