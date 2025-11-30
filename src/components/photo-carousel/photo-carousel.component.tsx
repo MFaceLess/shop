@@ -28,18 +28,18 @@ export const PhotoCarousel = ({urls}: IPhotos) => {
 
   return ( 
     <div className={styles.carouselContainer}>
-      <img className={styles.photo} src={urls[currentPhotoIndex]} alt="photo" />
+      <img className={styles.photo} src={`${urls[currentPhotoIndex]}`} alt="photo" />
       <button 
         className={`${styles.navButton} ${styles.leftButton}`} 
         onClick={(event) => handleLeftClick(ClickDirection.left, event)}
         disabled={currentPhotoIndex === 0}>
-          <img className={styles.arrow} src={'/left.svg'} />
+          <img className={styles.arrow} src={'left.svg'} />
       </button>
       <button 
         className={`${styles.navButton} ${styles.rightButton}`} 
         onClick={(event) => handleLeftClick(ClickDirection.right, event)}
         disabled={currentPhotoIndex === urls.length - 1}>
-        <img className={styles.arrow} src={'/right.svg'} />
+        <img className={styles.arrow} src={'right.svg'} />
       </button>
     </div>
   )
