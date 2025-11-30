@@ -1,7 +1,7 @@
 import { PhotoCarousel } from '../photo-carousel/photo-carousel.component';
 import styles from './product-card.component.module.css';
 import type { ISize } from '../../domain/types';
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 
 interface ProductCardProps {
   name: string;
