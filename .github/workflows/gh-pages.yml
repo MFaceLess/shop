@@ -17,11 +17,11 @@ jobs:
           node-version: 'lts/*'
       
       - name: Install and build
+        working-directory: ./src
         run: |
-          cd src
           npm ci
           npm run build
-          touch dist/.nojekyll  # ← теперь dist создается в src/dist
+          touch dist/.nojekyll
       
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v3
