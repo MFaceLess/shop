@@ -23,7 +23,7 @@ export const Header = ({ name }: IHeaderProps) => {
           className={`${styles.icon} ${styles.noOutline}`}
           onClick={() => handleBackClick()}
         >
-          <img src='back.svg' />
+          <img src='/shop/back.svg' />
         </button>
         <h5>{name}</h5>
       </div>
@@ -31,7 +31,7 @@ export const Header = ({ name }: IHeaderProps) => {
         className={styles.icon}
         onClick={() => handlePurchaseClick()}  
       >
-        <img src='cart.svg' alt='Корзина'/>
+        <img src='/shop/cart.svg' alt='Корзина'/>
       </button>
     </header>
   )
