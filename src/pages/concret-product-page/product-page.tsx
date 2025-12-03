@@ -2,29 +2,41 @@ import { Header, ProductCardComponent } from '../../components';
 import { observer } from 'mobx-react-lite';
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { productStore } from '../../state/store';
 import type { IProduct, ISize } from '../../domain/types';
-import styles from './product-page.module.css';
 import { purchaseStore } from '../../state/purchase';
+import { productRepository } from '../../data/repositories';
+import styles from './product-page.module.css';
+import { toast } from 'react-toastify';
 
 export const ConcreteProductCardComponent = observer(() => {
   const { id } = useParams();
   const [product, setProduct] = useState<IProduct>();
   const [selectedSizesByColor, setSelectedSizesByColor] = useState<Map<number, number[]>>(new Map());
-
-  const sizes = productStore.sizes;
+  const [sizesMap, setSizesMap] = useState<Map<number, ISize>>(new Map());
 
   useEffect(() => {
-    productStore.loadSizes();
-
-    const concreteProduct = productStore.products.find(product => product.id === Number(id));
-    if (concreteProduct) {
-      setProduct(concreteProduct);
-    } else {
-      productStore.loadProduct(Number(id))
-        .then(setProduct);
+    if (!id) {
+      return;
     }
+
+    productRepository.getProduct(Number(id))
+      .then(setProduct)
   }, [id])
+
+  useEffect(() => {
+    if (!product) return;
+
+    const sizeIDs = product.colors.flatMap(color => color.sizes);
+    const promises: Promise<ISize>[] = [];
+    sizeIDs.forEach(sizeID => {
+      promises.push(productRepository.getSize(sizeID));
+    })
+    Promise.all(promises)
+      .then(sizes => {
+        const map = new Map(sizes.map(size => [size.id, size]));
+        setSizesMap(map);
+      });
+  }, [product])
 
   const handleSelectedSizesChange = (colorId: number, selectedSizes: number[]) => {
     setSelectedSizesByColor(prev => {
@@ -40,15 +52,16 @@ export const ConcreteProductCardComponent = observer(() => {
     const selectedSizes = selectedSizesByColor.get(colorId) || [];
     
     if (selectedSizes.length === 0) {
-      alert('Пожалуйста, выберите размеры');
+      toast.warning('Пожалуйста, выберите размеры.');
       return;
     }
 
     purchaseStore.buyItem(product, colorId, selectedSizes);
 
     setSelectedSizesByColor(prev => {
-      prev.delete(colorId)
-      return prev;
+      const newMap = new Map(prev);
+      newMap.delete(colorId)
+      return newMap;
     });
   }
 
@@ -79,9 +92,11 @@ export const ConcreteProductCardComponent = observer(() => {
             color={color.name}
             price={color.price}
             description={color.description}
-            sizes={color.sizes
-              .map(sizeId => sizes.get(sizeId))
-              .filter((size): size is ISize => size !== undefined)
+            sizes={color.sizes.length === 0 
+              ? undefined 
+              : color.sizes
+                .map(sizeId => sizesMap.get(sizeId))
+              . filter((size): size is ISize => size !== undefined)
             }
             onSelectedSizesChange={(selectedSizes) => 
               handleSelectedSizesChange(color.id, selectedSizes)
@@ -89,7 +104,7 @@ export const ConcreteProductCardComponent = observer(() => {
             disabledSizes={getDisabledSizesForColor(color.id)}
           >
             {color.sizes.length > 0 &&
-              <button 
+              <button
                 className={styles.buyButton}
                 onClick={() => handleBuyClick(color.id)}
               >

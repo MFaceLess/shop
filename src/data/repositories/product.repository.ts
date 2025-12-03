@@ -3,6 +3,8 @@ import type { IColor, IProduct, ISize } from '../../domain/types';
 import { getSizes, getSize, getProducts, getProduct, getProductColor } from '../../services/api';
 
 export class ProductRepository extends ProductAbstractRepository {
+  private cachedSizes = new Map<number, ISize>();
+
   constructor() {
     super();
   }
@@ -12,7 +14,15 @@ export class ProductRepository extends ProductAbstractRepository {
   }
 
   public override getSize(sizeId: number): Promise<ISize> {
-    return getSize(sizeId);
+    if (this.cachedSizes.has(sizeId)) {
+      return Promise.resolve(this.cachedSizes.get(sizeId)!);
+    }
+
+    return getSize(sizeId)
+      .then(size => {
+        this.cachedSizes.set(sizeId, size); 
+        return size;
+      });
   }
 
   public override getProducts(): Promise<IProduct[]> {
@@ -27,3 +37,5 @@ export class ProductRepository extends ProductAbstractRepository {
     return getProductColor(productID, colorID);
   }
 }
+
+export const productRepository = new ProductRepository();

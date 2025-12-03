@@ -1,10 +1,13 @@
 import { HashRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { ConcreteProductCardComponent, ProductsPageComponent } from './pages';
 import { PurchaseComponent } from './pages/purchase-page/purchase-page.component';
+import { ToastContainer } from 'react-toastify';
 
 function App() {
   return (
     <HashRouter>
+      <ToastContainer position="bottom-right" />
+
       <Routes>
         <Route path='/' element={<Navigate to={'/products'} replace />} />
         <Route path='/products' element={<ProductsPageComponent />}/>

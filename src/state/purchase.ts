@@ -1,6 +1,8 @@
 import { makeAutoObservable } from "mobx";
 import type { IColor, IProduct } from '../domain/types';
 
+const NOT_EXIST = -1;
+
 export class PurchaseStore {
   public myPurchase: Array<{
     product: IProduct;
@@ -17,11 +19,28 @@ export class PurchaseStore {
     const color = product.colors.find(c => c.id === colorId);
     if (!color) return;
 
-    this.myPurchase.push({
-      product,
-      color,
-      selectedSizes
-    });
+    const existingIndex = this.myPurchase.findIndex(
+      item => item.product.id === product.id && item.color.id === colorId
+    );
+
+    if (existingIndex === NOT_EXIST) {
+      this.myPurchase.push({
+        product,
+        color,
+        selectedSizes
+      });
+    } else {
+      const existingItem = this.myPurchase[existingIndex];    
+      const combinedSizes = [...new Set([
+        ...existingItem.selectedSizes,
+        ...selectedSizes
+      ])];
+      this.myPurchase[existingIndex] = {
+        ...existingItem,
+        selectedSizes: combinedSizes
+      };
+    }
+
 
     this.saveToLocalStorage();
   }
@@ -30,6 +49,36 @@ export class PurchaseStore {
     this.myPurchase = this.myPurchase.filter(
       item => !(item.product.id === productId && item.color.id === colorId)
     );
+    this.saveToLocalStorage();
+  }
+
+  public removeSizes(productId: number, colorId: number, sizesToRemove: number[]) {
+    if (sizesToRemove.length === 0) {
+      this.removeItem(productId, colorId);
+      return;
+    }
+
+    this.myPurchase = this.myPurchase.map(item => {
+      if (item.product.id === productId && item.color.id === colorId) {
+        const remainingSizes = item.selectedSizes.filter(
+          sizeId => !sizesToRemove.includes(sizeId)
+        );
+        
+        if (remainingSizes.length > 0) {
+          return {
+            ...item,
+            selectedSizes: remainingSizes
+          };
+        } else {
+          return null;
+        }
+      }
+      return item;
+    })
+      .filter((item): item is { product: IProduct; color: IColor; selectedSizes: number[] } => 
+        item !== null
+      );
+
     this.saveToLocalStorage();
   }
 

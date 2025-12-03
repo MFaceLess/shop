@@ -1,0 +1,60 @@
+.skeleton {
+    position: relative;
+    background-color: #e8e8e8;
+    overflow: hidden;
+    border-radius: 4px;
+}
+
+.skeleton::before,
+.skeleton::after {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    content: '';
+}
+
+.skeleton::before {
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.6) 30%,
+        rgba(255, 255, 255, 0.9) 50%,
+        rgba(255, 255, 255, 0.6) 70%,
+        transparent 100%
+    );
+    animation: shimmer-main 1.5s infinite;
+    z-index: 2;
+}
+
+.skeleton::after {
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.3) 40%,
+        rgba(255, 255, 255, 0.5) 60%,
+        rgba(255, 255, 255, 0.3) 80%,
+        transparent 100%
+    );
+    animation: shimmer-secondary 2s infinite 0.3s;
+    z-index: 1;
+}
+
+@keyframes shimmer-main {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+@keyframes shimmer-secondary {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}

@@ -51,7 +51,7 @@
     background: #007bff;
     color: white;
     border-color: #007bff;
-    }
+}
 
 .sizeText {
     font-size: 0.9rem;
@@ -61,4 +61,8 @@
   background-color: #f8f9fa;
   color: #6c757d;
   border-color: #dee2e6;
+}
+
+.description {
+    width: 95%;
 }

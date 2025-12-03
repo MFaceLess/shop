@@ -1,29 +1,38 @@
-import { useEffect } from 'react';
-import { Header, ProductCardComponent } from '../../components';
-import { observer } from 'mobx-react-lite';
-import { productStore } from '../../state/store';
+import { useEffect, useMemo, useState } from 'react';
+import { Header, MainProductCard } from '../../components';
 import { Link } from 'react-router-dom';
+import type { IProduct } from '../../domain/types';
+import { productRepository } from '../../data/repositories';
 import styles from './products-page.module.css';
 
-export const ProductsPageComponent = observer(() => {
-  useEffect(() => {
-    productStore.fetchProducts();
-  }, [])
+export const ProductsPageComponent = () => {
+  const [products, setProducts] = useState<IProduct[]>([]);
 
-  const productImages = productStore.productImagesMap;
+  const productImagesMap = useMemo(() => {
+    const map = new Map<number, string[]>();
+    products.forEach(product => {
+      map.set(product.id, product.colors.flatMap(color => color.images));
+    })
+    return map;
+  }, [products])
+
+  useEffect(() => {
+    productRepository.getProducts()
+      .then(setProducts);
+  }, [])
 
   return (
     <>
       <Header name='Главная'/>
       <main className={styles.grid}>
-        {productStore.products.map(product => (
+        {products.map(product => (
           <Link to={`${product.id}`} key={product.id} className={styles.link}>
-            <ProductCardComponent  
+            <MainProductCard
               name={product.name} 
-              imagesUrl={productImages.get(product.id) ?? []} />
+              imagesUrl={productImagesMap.get(product.id) ?? []} />
           </Link>
         ))}
       </main>
     </>
   );
-})
+}
